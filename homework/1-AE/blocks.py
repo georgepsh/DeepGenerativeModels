@@ -27,7 +27,7 @@ class DenoisingBlock(RegularBlock):
               bias=False, upsample=False):
 
         super().__init__(in_channels, out_channels, kernel, stride, \
-              bias=False, upsample=False)
+              bias=bias, upsample=upsample)
         self.dropout = nn.Dropout(0.3)
         
     def forward(self, x):
@@ -35,4 +35,4 @@ class DenoisingBlock(RegularBlock):
             x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners=False, recompute_scale_factor=False)
         x = x + torch.randn_like(x) * 0.05
         x = self.dropout(x)
-        return self.act(self.norm(self.conv(x)))
+        return self.activ(self.batchnorm(self.conv(x)))
