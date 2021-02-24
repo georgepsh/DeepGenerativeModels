@@ -12,7 +12,7 @@ class Classifier(nn.Module):
             block(32, 32, 3, stride=2),
             block(32, 64, 3, stride=1).conv,
         )
-        self.fc = nn.Linear(64, n_classes)
+        self.fc = nn.Linear(1024, n_classes)
         
     def forward(self, x):
         activations = self.get_activations(x)
@@ -22,5 +22,5 @@ class Classifier(nn.Module):
     def get_activations(self, x):
         x = self.encoder(x)
         print(x.shape)
-        x = x.view(-1, 32)
+        x = x.view(-1, 1024)
         return self.fc(x)

@@ -26,7 +26,7 @@ def compute_validation_loss(model, valid_loader, loss_function, data_preprocess)
 
 def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_loss_function, valid_loss_function, data_preprocess=None):
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=True)
-    valid_dataloader = Dataloader(valid_dataset, batch_size=batch_size, drop_last=False)
+    valid_dataloader = DataLoader(valid_dataset, batch_size=batch_size, drop_last=False)
     optimizer = optim.Adam(model.parameters(), lr=lr)
     losses_list = []
     validation_losses_list = []

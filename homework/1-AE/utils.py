@@ -3,6 +3,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+def custom_cross_entropy(model_output, images, labels, model):
+    criterion = nn.CrossEntropyLoss()
+    return criterion(model_output, labels)
+
+
 def custom_mse_loss(model_output, images, labels, model):
   return F.mse_loss(model_output, images)
 
