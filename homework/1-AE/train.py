@@ -11,7 +11,7 @@ def compute_validation_loss(model, valid_loader, loss_function, data_preprocess)
     with torch.no_grad():
         loss = 0
         count = 0
-        for idx, batch in enumerate(datavalid_loaderloader):
+        for idx, batch in enumerate(valid_loader):
             count += 1
             images, labels = batch
             images = images.to(device)
@@ -34,7 +34,7 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
     model.train()
     loss_decreases = 0
     for ep in range(epochs):
-        for idx, batch in tqdm(enumerate(train_dataset), desc='train loop', leave=True):
+        for idx, batch in tqdm(enumerate(train_dataloader), desc='train loop', leave=True):
             images, labels = batch
             images = images.to(device)
             if data_preprocess is not None:
