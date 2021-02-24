@@ -48,7 +48,7 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
             optimizer.step()
             losses_list.append(loss.item())
         
-        valid_loss = compute_validation_loss(model, valid_loader, valid_loss_function, data_preprocess)
+        valid_loss = compute_validation_loss(model, valid_dataloader, valid_loss_function, data_preprocess)
         validation_losses_list.append(valid_loss)
         if valid_loss < best_valid_loss:
             best_valid_loss = valid_loss
