@@ -38,8 +38,8 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
     best_valid_loss = float('inf')
     model.train()
     loss_decreases = 0
-    for ep in range(epochs):
-        for idx, batch in tqdm(enumerate(train_dataloader), desc='train loop', leave=True):
+    for ep in tqdm(range(epochs), desc='train loop', leave=True):
+        for idx, batch in enumerate(train_dataloader):
             images, labels = batch
             images = images.to(device)
             labels = labels.to(device)
