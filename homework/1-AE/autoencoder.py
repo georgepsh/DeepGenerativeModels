@@ -5,8 +5,9 @@ from blocks import RegularBlock, DenoisingBlock
 
 
 class AutoEncoder(nn.Module):
-    def __init__(self, block=RegularBlock):
+    def __init__(self, block=RegularBlock, name='autoencoder'):
         super().__init__()
+        self.name = name
         self.encoder = nn.Sequential(
             block(1, 16, 3, stride=2),
             block(16, 32, 3, stride=2),
@@ -34,6 +35,6 @@ class AutoEncoder(nn.Module):
 
 
 class DenoisingAutoEncoder(AutoEncoder):
-    def __init__(self):
-        super().__init__(block=DenoisingBlock)
+    def __init__(self, block=DenoisingBlock, name='denoising_autoencoder'):
+        super().__init__(block=block, name=name)
     

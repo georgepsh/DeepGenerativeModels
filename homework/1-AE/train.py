@@ -5,6 +5,8 @@ from torch.utils.data import DataLoader
 from tqdm.notebook import tqdm
 import numpy as np
 from sklearn.metrics import accuracy_score
+import wandb
+
 
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
@@ -49,20 +51,26 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
             loss = train_loss_function(model_output, images, labels, model)
             loss.backward()
             optimizer.step()
-            losses_list.append(loss.item())
+
+            # logging
+            wandb.log({
+              f'{model.name}_train_loss': loss.item()
+            })
         if valid_dataset is not None:
           valid_loss = compute_validation_loss(model, valid_dataloader, valid_loss_function, data_preprocess)
-          validation_losses_list.append(valid_loss)
+
+          # logging
+          wandb.log({
+            f'{model.name}_valid_loss:', valid_loss
+          })
           if valid_loss < best_valid_loss:
               best_valid_loss = valid_loss
               loss_decreases = 0 
           else:
               loss_decreases += 1
               if loss_decreases > 2:
-                  return losses_list, validation_losses_list
+                  break
 
-        
-    return losses_list, validation_losses_list
 
   
 def measure_accuracy(model, dataset):
