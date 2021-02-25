@@ -38,8 +38,10 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
     best_valid_loss = float('inf')
     model.train()
     loss_decreases = 0
+    iteration = 0
     for ep in tqdm(range(epochs), desc='train loop', leave=True):
         for idx, batch in enumerate(train_dataloader):
+            iteration += 1
             images, labels = batch
             images = images.to(device)
             labels = labels.to(device)
@@ -55,14 +57,16 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
 
             # logging
             wandb.log({
-              f'{model.name}_train_loss': loss.item()
+              f'{model.name}_train_loss': loss.item(),
+              f'{model.name}_train_iteration': iteration
             })
         if valid_dataset is not None:
           valid_loss = compute_validation_loss(model, valid_dataloader, valid_loss_function, data_preprocess)
 
           # logging
           wandb.log({
-            f'{model.name}_valid_loss:', valid_loss
+            f'{model.name}_valid_loss': valid_loss,
+            f'{model.name}_valid_epoch': ep
           })
           if valid_loss < best_valid_loss:
               best_valid_loss = valid_loss
