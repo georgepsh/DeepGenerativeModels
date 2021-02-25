@@ -55,8 +55,8 @@ def plot_samples(model, dataset, num_samples):
 
 
 def get_latent_features(model, dataset):
-    features = np.array)
-    labels = []
+    features = np.array([])
+    labels = np.array([])
     model.eval()
     dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=False)
     
@@ -64,7 +64,7 @@ def get_latent_features(model, dataset):
         image = image.to(device)
         target = target.cpu().numpy()
         latent = model.get_latent_features(image).cpu().numpy()
-        features.extend(latent)
-        labels.extend(target)
+        np.append(features, latent)
+        np.append(labels, target)
 
     return features.T, labels
