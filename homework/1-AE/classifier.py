@@ -3,8 +3,9 @@ import torch.nn as nn
 from blocks import RegularBlock
 
 class Classifier(nn.Module):
-    def __init__(self, n_classes=10, block=RegularBlock):
+    def __init__(self, n_classes=10, block=RegularBlock, name='classifier'):
         super().__init__()
+        self.name = name
         self.encoder = nn.Sequential(
             block(1, 16, 3, stride=2),
             block(16, 32, 3, stride=2),
@@ -29,8 +30,9 @@ class Classifier(nn.Module):
 
 
 class MnistClassifier(nn.Module):
-    def __init__(self, n_classes=10, block=RegularBlock):
+    def __init__(self, n_classes=10, name='classifier'):
         super().__init__()
+        self.name = name
         self.conv_layers = nn.Sequential(
             nn.Conv2d(1, 6, 5),
             nn.ELU(),

@@ -19,6 +19,7 @@ def compute_validation_loss(model, valid_loader, loss_function, data_preprocess)
             count += 1
             images, labels = batch
             images = images.to(device)
+            labels = labels.to(device)
             if data_preprocess is not None:
               preprocessed_images = data_preprocess(images)
             else:
