@@ -3,32 +3,25 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm.notebook import tqdm
-from sklearn.metrics import accuracy_score
 
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 
 def compute_validation_loss(model, valid_loader, loss_function, data_preprocess):
     with torch.no_grad():
-        outputs = []
-        targets = []
+        loss = 0
+        count = 0
         for idx, batch in enumerate(valid_loader):
             count += 1
             images, labels = batch
             images = images.to(device)
-            labels = labels.to(device)
             if data_preprocess is not None:
               preprocessed_images = data_preprocess(images)
             else:
               preprocessed_images = images.clone()
-            logits = model(preprocessed_images)
-            probs = torch.softmax(model_output, dim=1)
-            model_output = torch.argmax(probs, dim=1)
-            outputs.extend(model_output.cpu().numpy())
-            targets.extend(labels.cpu().numpy())
-    outputs = np.array(outputs)
-    targets = np.array(targets)
-    return accuracy_score(targets, outputs)
+            model_output = model(preprocessed_images)
+            loss += loss_function(model_output, images, labels, model).item()
+    return loss / count
 
 
 def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_loss_function, valid_loss_function, data_preprocess=None):
@@ -70,17 +63,24 @@ def train(model, train_dataset, valid_dataset, batch_size, epochs, lr, train_los
     return losses_list, validation_losses_list
 
   
-def accuracy(model, dataset):
-    dataloader = DataLoader(dataset, batch_size=64)
+def measure_accuracy(model, dataset):
     model.eval()
-    accuracy = 0
-    counter = 0
-    for data in dataloader:
-      counter += 1
-      image, labels = data
-      image = image.to(device)
-      labels = labels.to(device)
-      prediction = model(image)
-      prediction = torch.argmax(prediction, dim=1)
-      accuracy += sum(prediction == labels) / len(prediction)
-    return accuracy / counter 
+    outputs = []
+    targets = []
+    for idx, batch in enumerate(valid_loader):
+        images, labels = batch
+        images = images.to(device)
+        labels = labels.to(device)
+        if data_preprocess is not None:
+          preprocessed_images = data_preprocess(images)
+        else:
+          preprocessed_images = images.clone()
+        logits = model(preprocessed_images)
+        probs = torch.softmax(model_output, dim=1)
+        model_output = torch.argmax(probs, dim=1)
+        outputs.extend(model_output.cpu().numpy())
+        targets.extend(labels.cpu().numpy())
+    outputs = np.array(outputs)
+    targets = np.array(targets)
+    model.train()
+    return accuracy_score(targets, outputs)
