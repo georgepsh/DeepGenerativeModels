@@ -4,6 +4,8 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from train import device
 import wandb
+import numpy as np
+
 
 def custom_cross_entropy(model_output, images, labels, model):
     criterion = nn.CrossEntropyLoss()
@@ -58,13 +60,13 @@ def get_latent_features(model, dataset):
     features = np.array([])
     labels = np.array([])
     model.eval()
-    dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=False)
+    dataloader = DataLoader(dataset, batch_size=64, drop_last=False)
     
     for (image, target) in dataloader:
         image = image.to(device)
-        target = target.cpu().numpy()
-        latent = model.get_latent_features(image).cpu().numpy()
-        np.append(features, latent)
-        np.append(labels, target)
+        target = target.cpu().detach().numpy()
+        latent = model.get_latent_features(image).cpu().detach().numpy()
+        features = np.append(features, latent)
+        labels = np.append(labels, target)
 
     return features.T, labels
