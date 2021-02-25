@@ -13,12 +13,13 @@ class AutoEncoder(nn.Module):
             block(16, 32, 3, stride=2),
             block(32, 32, 3, stride=2),
             block(32, 64, 3, stride=2),
-            block(64, 64, 3, stride=1).conv,
+            block(64, 64, 3, stride=2).conv,
         )
 
         self.decoder = nn.Sequential(
             block(64, 64, 3, upsample=True),
             block(64, 32, 3, upsample=True),
+            block(32, 32, 3, upsample=True),
             block(32, 32, 3, upsample=True),
             block(32, 16, 3, upsample=True),
             block(16, 1, 3).conv,
