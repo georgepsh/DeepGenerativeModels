@@ -66,7 +66,28 @@ def calculate_activation_statistics(dataloader, model, classifier):
     classifier.eval()
     model.eval()
     device = next(model.parameters()).device
-    
+    all_generated_activations = []
+    all_true_activations = []
+    for (image, label) in dataloader:
+        image = image.to(device)
+        generated = model(image).detach()
+        generated_activations = classifier.get_activations(generated).detach().cpu()
+        true_activations = classifier.get_activations(image).detach().cpu()
+
+        all_generated_activations.append(generated_activations)
+        all_true_activations.append(true_activations)
+
+    all_generated_activations = torch.cat(all_generated_activations).numpy()
+    all_true_activations = torch.cat(all_true_activations).numpy()
+
+    mu1 = all_true_activations.mean(axis=0)
+    sigma1 = np.cov(all_true_activations, rowvar=False)
+
+    mu2 = all_generated_activations.mean(axis=0)
+    sigma2 = np.cov(all_generated_activations, rowvar=False)
+
+    return mu1, sigma1, mu2, sigma2
+
     # Здесь ожидается что вы пройдете по данным из даталоадера и соберете активации классификатора для реальных и сгенерированных данных
     # После этого посчитаете по ним среднее и ковариацию, по которым посчитаете frechet distance
     # В целом все как в подсчете оригинального FID, но с вашей кастомной моделью классификации
