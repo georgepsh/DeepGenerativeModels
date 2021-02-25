@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm.notebook import tqdm
+import numpy as np
+from sklearn.metrics import accuracy_score
 
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
@@ -67,16 +69,13 @@ def measure_accuracy(model, dataset):
     model.eval()
     outputs = []
     targets = []
-    for idx, batch in enumerate(valid_loader):
+    dataloader = DataLoader(dataset, batch_size=64)
+    for idx, batch in enumerate(dataloader):
         images, labels = batch
         images = images.to(device)
         labels = labels.to(device)
-        if data_preprocess is not None:
-          preprocessed_images = data_preprocess(images)
-        else:
-          preprocessed_images = images.clone()
-        logits = model(preprocessed_images)
-        probs = torch.softmax(model_output, dim=1)
+        logits = model(images)
+        probs = torch.softmax(logits, dim=1)
         model_output = torch.argmax(probs, dim=1)
         outputs.extend(model_output.cpu().numpy())
         targets.extend(labels.cpu().numpy())

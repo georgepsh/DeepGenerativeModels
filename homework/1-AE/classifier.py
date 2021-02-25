@@ -23,7 +23,6 @@ class Classifier(nn.Module):
     
     def get_activations(self, x):
         x = self.encoder(x)
-        print(x.shape)
         x = x.view(-1, 256)
         return self.actv(self.fc1(x))
 
