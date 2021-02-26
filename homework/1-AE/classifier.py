@@ -56,3 +56,24 @@ class MnistClassifier(nn.Module):
         x = self.conv_layers(x)
         x = self.actv(self.fc1(x))
         return self.actv(self.fc2(x))
+
+
+class MLP(nn.Module):
+  def __init__(self, input_dim=4096, n_classes=1623, name='MLP'):
+    super().__init__()
+    self.name = name
+    self.layers = nn.Sequential(
+      nn.Linear(input_dim, 512),
+      nn.ReLU(),
+      nn.Linear(512, 512),
+      nn.ReLU(),
+      nn.Linear(512, n_classes)
+    )
+  
+  def forward(self, x):
+    if len(x.shape) == 4:
+      batch_size = x.shape[0]
+      x = x.view(batch_size, -1)
+    return self.layers(x)
+
+
