@@ -24,4 +24,4 @@ def compute_gradient_penalty(critic, real_samples, fake_samples):
     return grad_penalty
 
 def permute_labels(labels):
-    # YOUR CODE
+    pass
