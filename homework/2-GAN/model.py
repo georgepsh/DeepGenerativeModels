@@ -260,4 +260,5 @@ class StarGAN:
         return total_loss.item(), d_loss_wd.item(), d_loss_cls.item(), grad_penalty.item()
 
     def generate(self, image, label):
-        # YOUR CODE
+        with torch.no_grad():
+            return self.G(image, label)
