@@ -100,11 +100,18 @@ class Critic(nn.Module):
         
 
 class StarGAN:
-    def __init__(self, train_dataset, test_dataset, config):
+    def __init__(self, train_dataset, test_dataset, config, classifier=None):
         self.G = Generator(config['c_dim'])
         self.D = Critic(config['c_dim'])
         
-        self.classifier = None
+        if not classifier:
+            model = torch.hub.load('pytorch/vision:v0.6.0', 'inception_v3', pretrained=True)
+            module_list = list(model.children())[:-1]
+            module_list.append(nn.Flatten())
+            self.classifier = nn.Sequential(*module_list)
+        else:
+            self.classifier = classifier
+            
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
         self.c_dim = config['c_dim']
@@ -217,7 +224,7 @@ class StarGAN:
         out_src, out_cls = self.D(images_fake)
 
         g_loss_fake = -torch.mean(out_src)
-        g_loss_cls = BCE(out_cls, labels_target)
+        g_loss_cls = torch.mean(BCE(out_cls, labels_target))
         g_loss_rec = torch.mean(torch.abs(images_real - images_rec))
         
         total_loss = g_loss_fake + g_loss_cls + g_loss_rec
@@ -239,7 +246,7 @@ class StarGAN:
         d_loss_real = -torch.mean(out_src_real)
         d_loss_fake = torch.mean(out_src_fake)
 
-        d_loss_cls = BCE(out_cls_real, labels_source)
+        d_loss_cls = torch.mean(BCE(out_cls_real, labels_source))
 
         grad_penalty = compute_gradient_penalty(self.D, images_real, images_fake)
 
