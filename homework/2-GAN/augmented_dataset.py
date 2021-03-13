@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 
 class AugmentedDataset(Dataset):
     def __init__(self, dataset, transform):
-        self.data = dataset.data
+        self.data = dataset
         self.transform = transform
     
     def __len__(self):
