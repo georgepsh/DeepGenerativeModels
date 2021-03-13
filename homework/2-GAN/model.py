@@ -210,7 +210,7 @@ class StarGAN:
 
 
     def trainG(self, images_real, label_source, label_target, optimizer):
-        BCE = nn.BCEWithLogitsLoss()
+        BCE = nn.BCEWithLogitsLoss(reduction='none')
 
         images_fake = self.G(images_real, labels_target)
         images_rec = self.G(images_fake, label_source)
@@ -229,7 +229,7 @@ class StarGAN:
         return total_loss.item(), g_loss_fake.item(), g_loss_cls.item() + g_loss_rec.item()
 
     def trainD(self, images_real, label_source, label_target, optimizer):
-        BCE = nn.BCEWithLogitsLoss()
+        BCE = nn.BCEWithLogitsLoss(reduction='none')
 
         images_fake = self.G(images_real, labels_target)
 
