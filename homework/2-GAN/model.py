@@ -1,8 +1,8 @@
 import torch
 from torch import nn
 from torch import optim
-from .utils import compute_gradient_penalty, permute_labels
-from .calculate_fid import calculate_fid
+from utils import compute_gradient_penalty, permute_labels
+from calculate_fid import calculate_fid
 from torch.utils.data import Dataloader
 
 import wandb
