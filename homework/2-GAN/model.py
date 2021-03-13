@@ -50,11 +50,11 @@ class Generator(nn.Module):
         self.up_sampling = nn.Sequential( 
             nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1, bias=False),
             nn.InstanceNorm2d(128, affine=True, track_running_stats=True),
-            nn.ReLU(inplace=True)
+            nn.ReLU(inplace=True),
 
             nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1, bias=False),
             nn.InstanceNorm2d(64, affine=True, track_running_stats=True),
-            nn.ReLU(inplace=True)
+            nn.ReLU(inplace=True),
 
             nn.Conv2d(64, 3m kernel_size=7, stride=1, padding=3, bias=False),
             nn.Tanh()
@@ -111,7 +111,7 @@ class StarGAN:
             self.classifier = nn.Sequential(*module_list)
         else:
             self.classifier = classifier
-            
+
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
         self.c_dim = config['c_dim']
