@@ -56,7 +56,7 @@ class Generator(nn.Module):
             nn.InstanceNorm2d(64, affine=True, track_running_stats=True),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(64, 3m kernel_size=7, stride=1, padding=3, bias=False),
+            nn.Conv2d(64, 3, kernel_size=7, stride=1, padding=3, bias=False),
             nn.Tanh()
         )
         
