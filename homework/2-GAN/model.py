@@ -3,7 +3,7 @@ from torch import nn
 from torch import optim
 from utils import compute_gradient_penalty, permute_labels
 from calculate_fid import calculate_fid
-from torch.utils.data import Dataloader
+from torch.utils.data import DataLoader
 
 import wandb
 
@@ -89,7 +89,7 @@ class Critic(nn.Module):
         
         self.network = nn.Sequential(*layers)
         self.out_src = nn.Conv2d(out_channels, 1, kernel_size=3, stride=1, padding=1, bias=False)
-        self.out_cls = nn.Conv2d(out_channels, c_dim, kernel_size=kernel_size, bias=False)
+        self.out_cls = nn.Conv2d(out_channels, c_dim, kernel_size=1, bias=False)
         
 
     def forward(self, x):
@@ -175,7 +175,7 @@ class StarGAN:
 
         decay_epochs = epochs - decay_start
 
-        dataloader = Dataloader(self.dataset, batch_size=16, shuffle=True)
+        dataloader = DataLoader(self.dataset, batch_size=16, shuffle=True)
         g_optim = optim.Adam(self.G.parameters(), g_lr, [beta_1, beta_2])
         d_optim = optim.Adam(self.D.parameters(), d_lr, [beta_1, beta_2])
 
